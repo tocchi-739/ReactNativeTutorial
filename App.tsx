@@ -23,10 +23,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'lightblue', // ← 背景色を追加
   },
   text: {
-    fontSize: 20,
+    fontSize: 24, // ← サイズを大きく
     fontWeight: 'bold',
+    color: 'darkblue', // ← 文字色を追加
   },
 });
 
