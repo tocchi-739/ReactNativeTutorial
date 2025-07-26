@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StatusBar,
   StyleSheet,
@@ -6,27 +6,24 @@ import {
   View,
   Text,
   Button,
-  Alert,
 } from 'react-native';
-
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
+  const [count, setCount] = useState(0); // ← 状態を追加
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <Text style={styles.title}>はじめての React Native！</Text>
       <Text style={styles.subtitle}>ホットリロードが便利です 🚀</Text>
-      <Text style={styles.description}>
-        ファイルを保存すると自動的に画面が更新されます
-      </Text>
 
-      <Button
-        title="ボタンを押してみてください"
-        onPress={() => {
-          Alert.alert('ボタンが押されました！');
-        }}
-      />
+      <Text style={styles.counter}>カウント: {count}</Text>
+
+      <View style={styles.buttonContainer}>
+        <Button title="➕ 増やす" onPress={() => setCount(count + 1)} />
+        <Button title="➖ 減らす" onPress={() => setCount(count - 1)} />
+        <Button title="🔄 リセット" onPress={() => setCount(0)} />
+      </View>
     </View>
   );
 }
@@ -36,24 +33,28 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightblue', // ← 背景色を追加
+    backgroundColor: 'lightblue',
+    padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: 'darkblue',
-    marginBottom: 20, // ← 下マージン
+    marginBottom: 20,
   },
   subtitle: {
     fontSize: 18,
     color: 'purple',
-    marginBottom: 10,
+    marginBottom: 30,
   },
-  description: {
-    fontSize: 14,
-    color: 'gray',
-    textAlign: 'center',
-    marginBottom: 30, // ← ボタンとの間に余白
+  counter: {
+    fontSize: 36, // ← 大きな文字
+    fontWeight: 'bold',
+    color: 'red',
+    marginBottom: 30,
+  },
+  buttonContainer: {
+    gap: 10, // ← ボタン間の隙間
   },
 });
 
