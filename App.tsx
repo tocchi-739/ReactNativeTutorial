@@ -6,23 +6,50 @@ import {
   View,
   Text,
   Button,
+  TextInput,
+  Alert,
 } from 'react-native';
+
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
-  const [count, setCount] = useState(0); // ← 状態を追加
+  const [count, setCount] = useState(0);
+  const [text, setText] = useState(''); // ← 入力テキスト用
+  const [name, setName] = useState(''); // ← 名前保存用
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <Text style={styles.title}>はじめての React Native！</Text>
-      <Text style={styles.subtitle}>ホットリロードが便利です 🚀</Text>
 
+      {/* 名前入力セクション */}
+      <Text style={styles.sectionTitle}>あなたの名前は？</Text>
+      <TextInput
+        style={styles.textInput}
+        placeholder="名前を入力してください"
+        value={text}
+        onChangeText={setText}
+      />
+      <Button
+        title="名前を設定"
+        onPress={() => {
+          setName(text);
+          setText('');
+          Alert.alert('設定完了！', `こんにちは、${text}さん！`);
+        }}
+      />
+
+      {name ? (
+        <Text style={styles.greeting}>こんにちは、{name}さん！</Text>
+      ) : null}
+
+      {/* カウンターセクション */}
+      <Text style={styles.sectionTitle}>カウンター</Text>
       <Text style={styles.counter}>カウント: {count}</Text>
 
       <View style={styles.buttonContainer}>
-        <Button title="➕ 増やす" onPress={() => setCount(count + 1)} />
-        <Button title="➖ 減らす" onPress={() => setCount(count - 1)} />
-        <Button title="🔄 リセット" onPress={() => setCount(0)} />
+        <Button title="➕" onPress={() => setCount(count + 1)} />
+        <Button title="➖" onPress={() => setCount(count - 1)} />
+        <Button title="🔄" onPress={() => setCount(0)} />
       </View>
     </View>
   );
@@ -40,21 +67,39 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: 'darkblue',
-    marginBottom: 20,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: 'purple',
     marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'purple',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    width: 250,
+    backgroundColor: 'white',
+    marginBottom: 10,
+  },
+  greeting: {
+    fontSize: 18,
+    color: 'green',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
   counter: {
-    fontSize: 36, // ← 大きな文字
+    fontSize: 36,
     fontWeight: 'bold',
     color: 'red',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   buttonContainer: {
-    gap: 10, // ← ボタン間の隙間
+    flexDirection: 'row', // ← 横並び
+    gap: 10,
   },
 });
 
