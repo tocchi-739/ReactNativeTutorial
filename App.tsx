@@ -5,6 +5,8 @@ import {
   useColorScheme,
   View,
   Text,
+  Button,
+  Alert,
 } from 'react-native';
 
 function App() {
@@ -18,6 +20,13 @@ function App() {
       <Text style={styles.description}>
         ファイルを保存すると自動的に画面が更新されます
       </Text>
+
+      <Button
+        title="ボタンを押してみてください"
+        onPress={() => {
+          Alert.alert('ボタンが押されました！');
+        }}
+      />
     </View>
   );
 }
@@ -44,6 +53,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
     textAlign: 'center',
+    marginBottom: 30, // ← ボタンとの間に余白
   },
 });
 
