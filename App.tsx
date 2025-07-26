@@ -7,45 +7,95 @@ import {
   Text,
   Button,
   TextInput,
-  Alert,
+  FlatList,
+  TouchableOpacity,
 } from 'react-native';
+
+type Todo = {
+  id: string;
+  text: string;
+  completed: boolean;
+};
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
   const [count, setCount] = useState(0);
-  const [text, setText] = useState(''); // ← 入力テキスト用
-  const [name, setName] = useState(''); // ← 名前保存用
+  const [todoText, setTodoText] = useState(''); // ← ToDo入力用
+  const [todos, setTodos] = useState<Todo[]>([]); // ← ToDoリスト
+
+  // ToDoを追加する関数
+  const addTodo = () => {
+    if (todoText.trim()) {
+      const newTodo = {
+        id: Date.now().toString(),
+        text: todoText,
+        completed: false,
+      };
+      setTodos([...todos, newTodo]);
+      setTodoText('');
+    }
+  };
+
+  // ToDoを削除する関数
+  const deleteTodo = (id: string) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
+
+  // ToDoの完了状態を切り替える関数
+  const toggleTodo = (id: String) => {
+    setTodos(
+      todos.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
+  };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Text style={styles.title}>はじめての React Native！</Text>
+      <Text style={styles.title}>React Native チュートリアル</Text>
 
-      {/* 名前入力セクション */}
-      <Text style={styles.sectionTitle}>あなたの名前は？</Text>
-      <TextInput
-        style={styles.textInput}
-        placeholder="名前を入力してください"
-        value={text}
-        onChangeText={setText}
-      />
-      <Button
-        title="名前を設定"
-        onPress={() => {
-          setName(text);
-          setText('');
-          Alert.alert('設定完了！', `こんにちは、${text}さん！`);
-        }}
-      />
+      {/* ToDoリストセクション */}
+      <Text style={styles.sectionTitle}>📋 ToDoリスト</Text>
+      <View style={styles.todoInput}>
+        <TextInput
+          style={styles.textInput}
+          placeholder="やることを入力"
+          value={todoText}
+          onChangeText={setTodoText}
+        />
+        <Button title="追加" onPress={addTodo} />
+      </View>
 
-      {name ? (
-        <Text style={styles.greeting}>こんにちは、{name}さん！</Text>
-      ) : null}
+      <FlatList
+        data={todos}
+        keyExtractor={item => item.id}
+        style={styles.todoList}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[styles.todoItem, item.completed && styles.todoCompleted]}
+            onPress={() => toggleTodo(item.id)}
+          >
+            <Text
+              style={[
+                styles.todoText,
+                item.completed && styles.todoTextCompleted,
+              ]}
+            >
+              {item.completed ? '✅' : '⭕'} {item.text}
+            </Text>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => deleteTodo(item.id)}
+            >
+              <Text style={styles.deleteButtonText}>🗑️</Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        )}
+      />
 
       {/* カウンターセクション */}
-      <Text style={styles.sectionTitle}>カウンター</Text>
-      <Text style={styles.counter}>カウント: {count}</Text>
-
+      <Text style={styles.sectionTitle}>🔢 カウンター: {count}</Text>
       <View style={styles.buttonContainer}>
         <Button title="➕" onPress={() => setCount(count + 1)} />
         <Button title="➖" onPress={() => setCount(count - 1)} />
@@ -58,47 +108,70 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'lightblue',
     padding: 20,
+    paddingTop: 60, // ← 上部余白を追加
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: 'darkblue',
-    marginBottom: 30,
+    textAlign: 'center',
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: 'purple',
-    marginTop: 20,
+    marginVertical: 10,
+  },
+  todoInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
     marginBottom: 10,
   },
   textInput: {
+    flex: 1,
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 5,
     padding: 10,
-    width: 250,
     backgroundColor: 'white',
-    marginBottom: 10,
   },
-  greeting: {
-    fontSize: 18,
-    color: 'green',
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  counter: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: 'red',
+  todoList: {
+    maxHeight: 200, // ← リストの最大高さ
     marginBottom: 20,
   },
+  todoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    marginVertical: 3,
+  },
+  todoCompleted: {
+    backgroundColor: 'lightgreen',
+  },
+  todoText: {
+    flex: 1,
+    fontSize: 16,
+  },
+  todoTextCompleted: {
+    textDecorationLine: 'line-through',
+    color: 'gray',
+  },
+  deleteButton: {
+    padding: 5,
+  },
+  deleteButtonText: {
+    fontSize: 16,
+  },
   buttonContainer: {
-    flexDirection: 'row', // ← 横並び
+    flexDirection: 'row',
+    justifyContent: 'center',
     gap: 10,
   },
 });
