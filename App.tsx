@@ -13,7 +13,11 @@ function App() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Text style={styles.text}>はじめての React Native！</Text>
+      <Text style={styles.title}>はじめての React Native！</Text>
+      <Text style={styles.subtitle}>ホットリロードが便利です 🚀</Text>
+      <Text style={styles.description}>
+        ファイルを保存すると自動的に画面が更新されます
+      </Text>
     </View>
   );
 }
@@ -25,10 +29,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'lightblue', // ← 背景色を追加
   },
-  text: {
-    fontSize: 24, // ← サイズを大きく
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: 'darkblue', // ← 文字色を追加
+    color: 'darkblue',
+    marginBottom: 20, // ← 下マージン
+  },
+  subtitle: {
+    fontSize: 18,
+    color: 'purple',
+    marginBottom: 10,
+  },
+  description: {
+    fontSize: 14,
+    color: 'gray',
+    textAlign: 'center',
   },
 });
 
