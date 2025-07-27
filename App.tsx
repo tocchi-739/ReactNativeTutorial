@@ -17,6 +17,10 @@ function App() {
                 title="🔢 カウンター画面"
                 onPress={() => setScreen('counter')}
               />
+              <Button
+                title="📸 カメラ画面"
+                onPress={() => setScreen('camera')}
+              />
             </View>
           </View>
         );
@@ -31,6 +35,14 @@ function App() {
         return (
           <View style={styles.container}>
             <Text style={styles.title}>🔢 カウンター画面</Text>
+            <Button title="🏠 ホームに戻る" onPress={() => setScreen('home')} />
+          </View>
+        );
+      case 'camera':
+        return (
+          <View style={styles.container}>
+            <Text style={styles.title}>📸 カメラ画面</Text>
+            <Text style={styles.subtitle}>カメラ機能をテストします</Text>
             <Button title="🏠 ホームに戻る" onPress={() => setScreen('home')} />
           </View>
         );
