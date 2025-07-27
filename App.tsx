@@ -1,8 +1,60 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, Image, Alert } from 'react-native';
+import {
+  launchCamera,
+  launchImageLibrary,
+  ImagePickerResponse,
+  MediaType,
+} from 'react-native-image-picker';
 
 function App() {
   const [screen, setScreen] = useState('home');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // カメラで撮影する関数
+
+  const takePhoto = () => {
+    const options = {
+      mediaType: 'photo' as MediaType,
+      includeBase64: false,
+      maxHeight: 2000,
+      maxWidth: 2000,
+    };
+
+    launchCamera(options, (response: ImagePickerResponse) => {
+      console.log('Camera Response:', response); // デバッグ用
+
+      if (response.didCancel) {
+        Alert.alert('キャンセル', '撮影がキャンセルされました');
+      } else if (response.errorMessage) {
+        Alert.alert('エラー', `エラーが発生しました: ${response.errorMessage}`);
+      } else if (response.assets && response.assets[0]) {
+        setSelectedImage(response.assets[0].uri || null);
+        Alert.alert('成功', '写真を撮影しました！');
+      } else {
+        Alert.alert('不明', '不明なレスポンスです');
+      }
+    });
+  };
+
+  // フォトライブラリから選択する関数
+  const selectFromLibrary = () => {
+    const options = {
+      mediaType: 'photo' as MediaType,
+      includeBase64: false,
+      maxHeight: 2000,
+      maxWidth: 2000,
+    };
+
+    launchImageLibrary(options, (response: ImagePickerResponse) => {
+      if (response.didCancel || response.errorMessage) {
+        console.log('選択がキャンセルされました');
+      } else if (response.assets && response.assets[0]) {
+        setSelectedImage(response.assets[0].uri || null);
+        Alert.alert('成功', '写真を選択しました！');
+      }
+    });
+  };
 
   const renderScreen = () => {
     switch (screen) {
@@ -42,8 +94,31 @@ function App() {
         return (
           <View style={styles.container}>
             <Text style={styles.title}>📸 カメラ画面</Text>
-            <Text style={styles.subtitle}>カメラ機能をテストします</Text>
-            <Button title="🏠 ホームに戻る" onPress={() => setScreen('home')} />
+
+            {selectedImage && (
+              <Image
+                source={{ uri: selectedImage }}
+                style={styles.imagePreview}
+              />
+            )}
+
+            <View style={styles.buttonContainer}>
+              <Button title="📷 写真を撮影" onPress={takePhoto} />
+              <Button
+                title="📁 ライブラリから選択"
+                onPress={selectFromLibrary}
+              />
+              {selectedImage && (
+                <Button
+                  title="🗑️ 画像をクリア"
+                  onPress={() => setSelectedImage(null)}
+                />
+              )}
+              <Button
+                title="🏠 ホームに戻る"
+                onPress={() => setScreen('home')}
+              />
+            </View>
           </View>
         );
       default:
@@ -76,6 +151,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     gap: 20,
     width: '80%',
+  },
+  imagePreview: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: 'darkblue',
   },
 });
 
